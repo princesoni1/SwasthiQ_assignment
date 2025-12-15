@@ -104,14 +104,46 @@ class AppointmentService:
         if search: filtered = [a for a in filtered if search.lower() in a['name'].lower()]
         return filtered
         
-    def update_appointment_status(self, id, status):
-        self.load_data()
+    # def update_appointment_status(self, id, status):
+    #     self.load_data()
+    #     for appt in self.appointments:
+    #         if appt['id'] == str(id):
+    #             appt['status'] = status
+    #             self.save_data()
+    #             return appt
+    #     return None
+
+    def update_appointment_status(self, id, new_status):
+        """
+        Updates the status of an appointment (e.g., 'Scheduled' -> 'Confirmed').
+        """
+        # Iterate through mock data to find the appointment
         for appt in self.appointments:
-            if appt['id'] == str(id):
-                appt['status'] = status
-                self.save_data()
-                return appt
-        return None
+            if str(appt['id']) == str(id): # Ensure ID types match
+                appt['status'] = new_status
+                
+                # ==============================================================================
+                # AWS ARCHITECTURE INTEGRATION NOTES
+                # ==============================================================================
+                
+                # 1. AURORA TRANSACTIONAL WRITE
+                # This is where the actual ACID transaction would occur.
+                # In a real AWS environment (using RDS Proxy + Aurora Serverless):
+                # ------------------------------------------------------------------
+                # with connection.cursor() as cursor:
+                #     cursor.execute("UPDATE appointments SET status = %s WHERE id = %s", (new_status, id))
+                #     connection.commit()
+                
+                # 2. APPSYNC SUBSCRIPTION TRIGGER
+                # Once the DB write is confirmed, this return value acts as the "Mutation Response".
+                # AppSync monitors this response. If you have defined a Subscription in your GraphQL Schema 
+                # like `subscription { onUpdateAppointmentStatus(id: ID!) }`, AppSync detects this 
+                # change and pushes the new data via WebSockets to all connected React clients.
+                # ------------------------------------------------------------------
+                
+                return True, appt
+                
+        return False, None
 
     def add_appointment(self, data):
         self.load_data()

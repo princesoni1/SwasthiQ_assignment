@@ -21,14 +21,20 @@ def get_appointments():
     data = service.get_appointments(date, status, search)
     return jsonify(data)
 
-@app.route('/appointments/<id>/status', methods=['PUT'])
+@app.route('/appointments/<id>/status', methods=['PATCH'])
 def update_status(id):
     data = request.json
     new_status = data.get('status')
-    updated_appt = service.update_appointment_status(id, new_status)
-    if updated_appt:
-        return jsonify(updated_appt)
-    return jsonify({"error": "Not found"}), 404
+    
+    if not new_status:
+        return jsonify({"error": "Missing status"}), 400
+        
+    success, updated_appt = service.update_appointment_status(id, new_status)
+    
+    if success:
+        return jsonify(updated_appt), 200
+    else:
+        return jsonify({"error": "Appointment not found"}), 404
 
 # NEW: Create Appointment Endpoint
 @app.route('/appointments', methods=['POST'])
