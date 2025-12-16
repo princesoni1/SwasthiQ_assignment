@@ -9,7 +9,6 @@ import {
 const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus }) => {
   if (!isOpen || !appointment) return null;
 
-  // 1. Calculate "Today" in IST
   const getTodayIST = () => {
     const now = new Date();
     const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
@@ -20,24 +19,21 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
   const todayStr = getTodayIST();
   const isPast = appointment.date < todayStr;
 
-  // 2. Helper for Status Badge Styling
   const getStatusStyle = (status) => {
       switch(status) {
           case 'Confirmed': return 'bg-green-100 text-green-800 border-green-200';
           case 'Cancelled': return 'bg-red-100 text-red-800 border-red-200';
           case 'Completed': return 'bg-blue-100 text-blue-800 border-blue-200';
-          default: return 'bg-gray-100 text-gray-800 border-gray-200'; // For 'Scheduled'
+          default: return 'bg-gray-100 text-gray-800 border-gray-200';
       }
   };
 
   return (
     <div className="fixed inset-0 bg-black/30 z-[60] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
-        {/* Header Color Bar */}
         <div className={`h-4 w-full ${appointment.status === 'Cancelled' ? 'bg-red-500' : 'bg-blue-600'}`}></div>
         
         <div className="p-6">
-          {/* Top Row: Title & Close */}
           <div className="flex justify-between items-start mb-4">
             <div>
                <h3 className="text-xl font-bold text-gray-900">{appointment.name}</h3>
@@ -48,7 +44,6 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
             </button>
           </div>
 
-          {/* NEW: Explicit Current Status Line */}
           <div className="mb-6 flex items-center justify-between bg-gray-50 p-3 rounded-lg border border-gray-100">
              <span className="text-sm font-semibold text-gray-500">Current Status</span>
              <span className={`px-3 py-1 rounded-full text-xs font-bold border uppercase tracking-wide ${getStatusStyle(appointment.status)}`}>
@@ -56,7 +51,6 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
              </span>
           </div>
 
-          {/* Details Grid */}
           <div className="grid grid-cols-2 gap-4 mb-6">
              <div className="p-3 rounded-lg border border-gray-100">
                 <div className="flex items-center gap-2 text-gray-400 mb-1">
@@ -75,12 +69,10 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
 
           <hr className="border-gray-100 mb-6" />
 
-          {/* Action Buttons */}
           <div>
             <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 block">Change Status</label>
             
             <div className={`grid ${isPast ? 'grid-cols-2' : 'grid-cols-3'} gap-2`}>
-                {/* Confirm Button (Hidden if Past) */}
                 {!isPast && (
                     <button 
                         onClick={() => onUpdateStatus(appointment.id, 'Confirmed')} 
@@ -93,7 +85,6 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
                     </button>
                 )}
 
-                {/* Cancel Button */}
                 <button 
                     onClick={() => onUpdateStatus(appointment.id, 'Cancelled')} 
                     className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all 
@@ -104,7 +95,6 @@ const AppointmentDetailsModal = ({ appointment, isOpen, onClose, onUpdateStatus 
                     <XCircle size={20} className="mb-1"/><span className="text-xs font-bold">Cancel</span>
                 </button>
                 
-                {/* Complete Button */}
                 <button 
                     onClick={() => onUpdateStatus(appointment.id, 'Completed')} 
                     className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 transition-all 
@@ -182,7 +172,6 @@ const RightPanel = ({ isOpen, onClose, formData, setFormData, onSubmit, selected
                 <label className="text-xs text-gray-500 block">Doctor</label>
                 <select className="w-full bg-transparent font-medium text-sm outline-none cursor-pointer"
                     value={formData.doctorName} onChange={e => setFormData({...formData, doctorName: e.target.value})}>
-                    {/* Dynamic Mapping from Backend Data */}
                     {doctors.map((doc, index) => (
                       <option key={index} value={doc}>{doc}</option>
                     ))}
@@ -201,7 +190,7 @@ const RightPanel = ({ isOpen, onClose, formData, setFormData, onSubmit, selected
 // --- MAIN DASHBOARD COMPONENT ---
 const AppointmentDashboard = () => {
   const [appointments, setAppointments] = useState([]);
-  const [doctors, setDoctors] = useState([]); // Dynamic Doctor List
+  const [doctors, setDoctors] = useState([]); 
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState('grid'); 
   const [selectedDate, setSelectedDate] = useState(''); 
@@ -212,15 +201,13 @@ const AppointmentDashboard = () => {
 
   const [newAppt, setNewAppt] = useState({
     name: '', title: '', time: '09:00', date: '', duration: '30 min', 
-    doctorName: '', // Will update after fetch
-    phone: '', email: '', mode: 'In-Person'
+    doctorName: '', phone: '', email: '', mode: 'In-Person'
   });
 
   const fetchConfig = async () => {
     try {
       const response = await fetch('http://127.0.0.1:5000/config');
       const data = await response.json();
-      
       if (data.current_date) {
         setSelectedDate(data.current_date);
         setCurrentMonth(new Date(data.current_date));
@@ -228,15 +215,11 @@ const AppointmentDashboard = () => {
       }
     } catch (err) {
       console.warn("Backend config failed, using local IST date.");
-      
-      // FALLBACK: Calculate IST manually in JavaScript
       const now = new Date();
       const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      const istOffset = 5.5 * 60 * 60 * 1000; // +5:30
+      const istOffset = 5.5 * 60 * 60 * 1000; 
       const istDate = new Date(utc + istOffset);
-      
       const todayIST = istDate.toISOString().split('T')[0];
-      
       setSelectedDate(todayIST);
       setCurrentMonth(new Date(todayIST));
       setNewAppt(prev => ({...prev, date: todayIST}));
@@ -253,8 +236,7 @@ const AppointmentDashboard = () => {
       }
     } catch (err) {
       console.error("Failed to fetch doctors", err);
-      // Fallback only if API fails completely
-      setDoctors(["Dr. Rajesh Kumar", "Dr. Priya Sharma","Dr. Anjali Gupta"]); // Removed Emily
+      setDoctors(["Dr. Rajesh Kumar", "Dr. Priya Sharma","Dr. Anjali Gupta"]); 
     }
   };
 
@@ -279,8 +261,6 @@ const AppointmentDashboard = () => {
       const ampm = hours >= 12 ? 'PM' : 'AM';
       const formattedTime = `${String(hours12).padStart(2, '0')}:${minutes} ${ampm}`;
       const finalDate = newAppt.date || selectedDate;
-
-      // Use selected doctor or fallback to first in list
       const finalDoctor = newAppt.doctorName || doctors[0];
 
       const payload = { 
@@ -310,11 +290,9 @@ const AppointmentDashboard = () => {
       }
       setIsPanelOpen(false); 
       await fetchAppointments();
-      // Reset form
       setNewAppt({ 
         name: '', title: '', time: '09:00', date: selectedDate, duration: '30 min', 
-        doctorName: doctors[0] || '', 
-        phone: '', email: '', mode: 'In-Person' 
+        doctorName: doctors[0] || '', phone: '', email: '', mode: 'In-Person' 
       });
     } catch (err) { alert("Failed to create appointment"); }
   };
@@ -333,7 +311,6 @@ const AppointmentDashboard = () => {
     } catch (err) { console.error("Status update error", err); alert("Error updating status"); }
   };
 
-  // Initial Load: Config -> Doctors -> Appointments
   useEffect(() => { 
     fetchConfig()
       .then(() => fetchDoctors())
@@ -377,16 +354,26 @@ const AppointmentDashboard = () => {
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden relative">
       
+      {/* MOBILE OVERLAY */}
       {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/20 z-20 md:hidden" onClick={() => setSidebarOpen(false)}></div>
+        <div 
+          className="fixed inset-0 bg-black/20 z-20 md:hidden transition-opacity" 
+          onClick={() => setSidebarOpen(false)}
+        ></div>
       )}
 
-      <aside className={`
-          flex flex-col bg-white border-r border-gray-200 z-30 h-full transition-all duration-300 ease-in-out
-          ${isSidebarOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0 opacity-0 md:opacity-100 overflow-hidden'}
-          md:relative fixed inset-y-0 left-0
-      `}>
-        <div className="p-6 flex items-center justify-between gap-2 text-indigo-600 font-bold text-xl min-w-[256px]">
+      {/* --- SIDEBAR --- */}
+      <aside 
+        className={`
+          fixed md:relative z-30 h-full bg-white border-r border-gray-200 
+          flex flex-col w-64 flex-shrink-0 transition-all duration-300 ease-in-out
+          ${isSidebarOpen 
+            ? 'translate-x-0 md:ml-0' 
+            : '-translate-x-full md:translate-x-0 md:-ml-64'
+          }
+        `}
+      >
+        <div className="p-6 flex items-center justify-between gap-2 text-indigo-600 font-bold text-xl">
            <div className="flex items-center gap-2">
               <Calendar className="w-6 h-6" /> MediCare
            </div>
@@ -395,7 +382,7 @@ const AppointmentDashboard = () => {
            </button>
         </div>
         
-        <nav className="flex-1 px-4 space-y-1 min-w-[256px]">
+        <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
              <button className="w-full flex items-center gap-3 px-3 py-2 text-indigo-600 bg-indigo-50 rounded-lg font-medium text-sm">
                 <Calendar size={18}/> Calendar
              </button>
@@ -412,36 +399,56 @@ const AppointmentDashboard = () => {
              <button onClick={() => alert("Settings Module coming soon!")} className="w-full flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 rounded-lg font-medium text-sm transition-colors">
                 <Settings size={18}/> Settings
              </button>
-        </nav>
 
-        <div className="p-4 min-w-[256px]">
-            <div className="bg-gray-50 rounded-xl p-3 border">
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-xs font-bold text-gray-700">{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
-                    <div className="flex gap-1">
-                        <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-200 rounded text-gray-500"><ChevronLeft size={12}/></button>
-                        <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-200 rounded text-gray-500"><ChevronRight size={12}/></button>
+             {/* MINI CALENDAR */}
+             <div className="mt-6">
+                <div className="bg-gray-50 rounded-xl p-3 border">
+                    <div className="flex justify-between items-center mb-2">
+                        <span className="text-xs font-bold text-gray-700">{currentMonth.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
+                        <div className="flex gap-1">
+                            <button onClick={() => changeMonth(-1)} className="p-1 hover:bg-gray-200 rounded text-gray-500"><ChevronLeft size={12}/></button>
+                            <button onClick={() => changeMonth(1)} className="p-1 hover:bg-gray-200 rounded text-gray-500"><ChevronRight size={12}/></button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-7 gap-1 text-[10px] text-center">
+                        {['S','M','T','W','T','F','S'].map(d => <span key={d} className="text-gray-400 font-semibold">{d}</span>)}
+                        {[...Array(getFirstDayOfMonth(currentMonth))].map((_, i) => <div key={`empty-${i}`} className="p-1"></div>)}
+                        {[...Array(getDaysInMonth(currentMonth))].map((_, i) => {
+                                const d = i + 1;
+                                const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+                                return (
+                                    <button key={d} onClick={() => handleMiniCalendarClick(d)}
+                                        className={`p-1 rounded-full hover:bg-blue-100 ${selectedDate === dateStr ? 'bg-blue-600 text-white font-bold' : 'text-gray-700'}`}>
+                                        {d}
+                                    </button>
+                                );
+                        })}
                     </div>
                 </div>
-                <div className="grid grid-cols-7 gap-1 text-[10px] text-center">
-                    {['S','M','T','W','T','F','S'].map(d => <span key={d} className="text-gray-400 font-semibold">{d}</span>)}
-                    {[...Array(getFirstDayOfMonth(currentMonth))].map((_, i) => <div key={`empty-${i}`} className="p-1"></div>)}
-                    {[...Array(getDaysInMonth(currentMonth))].map((_, i) => {
-                         const d = i + 1;
-                         const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth()+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                         return (
-                            <button key={d} onClick={() => handleMiniCalendarClick(d)}
-                                className={`p-1 rounded-full hover:bg-blue-100 ${selectedDate === dateStr ? 'bg-blue-600 text-white font-bold' : 'text-gray-700'}`}>
-                                {d}
-                            </button>
-                         );
-                    })}
+             </div>
+        </nav>
+
+        {/* STATUS GUIDE (LEGEND) */}
+        <div className="p-4 border-t border-gray-100 bg-gray-50/50 mt-auto">
+            <h4 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Status Guide</h4>
+            <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-500 border border-blue-600"></div>
+                    <span className="text-xs font-medium text-gray-600">Confirmed / Scheduled</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-green-500 border border-green-600"></div>
+                    <span className="text-xs font-medium text-gray-600">Completed</span>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-gray-400 border border-gray-500 opacity-70"></div>
+                    <span className="text-xs font-medium text-gray-600">Cancelled</span>
                 </div>
             </div>
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col h-full relative w-full overflow-hidden bg-white">
+      <main className="flex-1 flex flex-col h-full relative w-full overflow-hidden bg-white transition-all duration-300">
         
         <header className="h-16 border-b border-gray-200 bg-white flex items-center justify-between px-6 flex-shrink-0 z-20 relative">
           <div className="flex items-center gap-4">
