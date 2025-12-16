@@ -105,7 +105,7 @@
         "time": "10:30 AM",
         "duration": "30 min",
         "doctorName": "Dr. Anjali Gupta",
-        "status": "Confirmed",
+        "status": "Cancelled",
         "mode": "Video Call",
         "reason": "General Inquiry"
     },
@@ -116,7 +116,7 @@
         "time": "01:00 PM",
         "duration": "45 min",
         "doctorName": "Dr. Priya Sharma",
-        "status": "Scheduled",
+        "status": "Cancelled",
         "mode": "In-Person",
         "reason": "Cavity Filling"
     },
@@ -127,7 +127,7 @@
         "time": "02:30 PM",
         "duration": "30 min",
         "doctorName": "Dr. Rajesh Kumar",
-        "status": "Confirmed",
+        "status": "Cancelled",
         "mode": "Video Call",
         "reason": "Dermatology Check"
     },
@@ -138,7 +138,7 @@
         "time": "04:00 PM",
         "duration": "30 min",
         "doctorName": "Dr. Anjali Gupta",
-        "status": "Scheduled",
+        "status": "Cancelled",
         "mode": "In-Person",
         "reason": "Physiotherapy"
     },
@@ -149,7 +149,7 @@
         "time": "05:15 PM",
         "duration": "15 min",
         "doctorName": "Dr. Priya Sharma",
-        "status": "Upcoming",
+        "status": "Cancelled",
         "mode": "Video Call",
         "reason": "Quick Follow-up"
     },
@@ -160,7 +160,7 @@
         "time": "09:00 AM",
         "duration": "60 min",
         "doctorName": "Dr. Rajesh Kumar",
-        "status": "Upcoming",
+        "status": "Completed",
         "mode": "In-Person",
         "reason": "Full Body Checkup"
     },
@@ -337,7 +337,7 @@
         "doctorName": "Dr. Anjali Gupta",
         "mode": "Video Call",
         "reason": "",
-        "status": "Scheduled",
+        "status": "Cancelled",
         "id": "31"
     },
     {
@@ -348,7 +348,7 @@
         "doctorName": "Dr. Rajesh Kumar",
         "mode": "In-Person",
         "reason": "",
-        "status": "Scheduled",
+        "status": "Cancelled",
         "id": "32"
     },
     {
@@ -361,7 +361,7 @@
         "phone": "7869378963",
         "email": "123@gmail.com",
         "mode": "In-Person",
-        "status": "Scheduled",
+        "status": "Completed",
         "id": "33"
     },
     {
@@ -374,7 +374,7 @@
         "phone": "4564651515",
         "email": "123@gmail.com",
         "mode": "In-Person",
-        "status": "Scheduled",
+        "status": "Completed",
         "id": "34"
     }
 ]
