@@ -206,7 +206,8 @@ const AppointmentDashboard = () => {
 
   const fetchConfig = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/config');
+      // CHANGED: Removed localhost domain
+      const response = await fetch('/api/config');
       const data = await response.json();
       if (data.current_date) {
         setSelectedDate(data.current_date);
@@ -228,7 +229,8 @@ const AppointmentDashboard = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:5000/doctors');
+      // CHANGED: Removed localhost domain
+      const response = await fetch('/api/doctors');
       const data = await response.json();
       setDoctors(data);
       if (data.length > 0) {
@@ -243,7 +245,8 @@ const AppointmentDashboard = () => {
   const fetchAppointments = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`http://127.0.0.1:5000/appointments`);
+      // CHANGED: Removed localhost domain
+      const response = await fetch(`/api/appointments`);
       const data = await response.json();
       setAppointments(data);
     } catch (err) {
@@ -270,7 +273,8 @@ const AppointmentDashboard = () => {
         time: formattedTime, date: finalDate, status: 'Scheduled', mode: 'In-Person'
       };
 
-      const response = await fetch('http://127.0.0.1:5000/appointments', {
+      // CHANGED: Removed localhost domain
+      const response = await fetch('/api/appointments', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
       });
 
@@ -299,7 +303,8 @@ const AppointmentDashboard = () => {
 
   const handleStatusUpdate = async (id, newStatus) => {
     try {
-        const response = await fetch(`http://127.0.0.1:5000/appointments/${id}/status`, {
+        // CHANGED: Removed localhost domain
+        const response = await fetch(`/api/appointments/${id}/status`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus })

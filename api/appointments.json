@@ -330,51 +330,16 @@
         "reason": "Emergency Dental"
     },
     {
-        "name": "hello",
-        "time": "10:01 AM",
-        "date": "2025-12-15",
-        "duration": "15 min",
-        "doctorName": "Dr. Anjali Gupta",
-        "mode": "Video Call",
-        "reason": "",
-        "status": "Cancelled",
-        "id": "31"
-    },
-    {
-        "name": "assd",
-        "time": "05:00 AM",
-        "date": "2025-12-15",
-        "duration": "30 min",
-        "doctorName": "Dr. Rajesh Kumar",
-        "mode": "In-Person",
-        "reason": "",
-        "status": "Cancelled",
-        "id": "32"
-    },
-    {
-        "name": "Ram",
-        "title": "general checkup",
+        "name": "Ravi ",
+        "title": "General Checkup",
         "time": "09:00 AM",
         "date": "2025-12-15",
         "duration": "30 min",
-        "doctorName": "Dr. Rajesh Kumar",
-        "phone": "7869378963",
+        "doctorName": "Dr. Anjali Gupta",
+        "phone": "7878",
         "email": "123@gmail.com",
         "mode": "In-Person",
-        "status": "Completed",
-        "id": "33"
-    },
-    {
-        "name": "shyam",
-        "title": "general checkup",
-        "time": "09:30 AM",
-        "date": "2025-12-15",
-        "duration": "30 min",
-        "doctorName": "Dr. Rajesh Kumar",
-        "phone": "4564651515",
-        "email": "123@gmail.com",
-        "mode": "In-Person",
-        "status": "Completed",
-        "id": "34"
+        "status": "Scheduled",
+        "id": "31"
     }
 ]
